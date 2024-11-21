@@ -1,1 +1,1 @@
-./odoo-bin --addons-path=addons,custom_apps -d odoo123 -u real_estate
+./odoo-bin --addons-path=addons,custom_apps,oms_assets -d odoo123 -u assets

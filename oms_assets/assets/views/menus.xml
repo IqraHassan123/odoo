@@ -7,8 +7,8 @@
     <menuitem id="menu_asset_attribute" name="Asset Attributes"
               parent="menu_asset_root"
               action="action_asset_attribute" sequence="40"/>
-    <menuitem id="menu_assets_Config" name="Configuration" parent="menu_asset_root" action="action_asset_settings" sequence="100"/>
-     <menuitem id="menu_assets_Settings" name="Asset Settings"
+    <menuitem id="menu_assets_Config" name="Configuration" parent="menu_asset_root" action="action_asset_settings" sequence="100" groups="group_asset_admin" />
+     <menuitem id="menu_assets_Settings" name="settings"
               parent="menu_assets_Config"
               action="action_asset_settings" sequence="60"/>
 </odoo>
