@@ -1,0 +1,69 @@
+<odoo>
+    <record id="view_assets_handling_form" model="ir.ui.view">
+        <field name="name">assets.handling.form</field>
+        <field name="model">assets.handling</field>
+        <field name="arch" type="xml">
+            <form string="Asset Handling">
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="title"/>
+                        <field name="asset_id"/>
+                        <field name="Assets"/>
+                        <field name="serial_number"/>
+                        <field name="category_id"/>
+                        <field name="condition"/>
+                        <field name="assigned_by_id"/>
+                        <field name="assigned_to"/>
+                        <field name="authorized_by_id"/>
+                        <field name="purchased_date"/>
+                        <field name="purchased_amount"/>
+                    </group>
+                    <group>
+                        <field name="summary"/>
+                        <field name="status"/>
+                    </group>
+                    <notebook>
+                       <page string="Attributes">
+<!--                           <label for="attribute_ids">-->
+                           <group>
+                                <field name="attribute_ids" />
+                           </group>
+<!--                           </label>-->
+                       </page>
+
+                        <page string="Categories">
+                            <group>
+                                <field name="category_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Asset Handling -->
+    <record id="view_assets_handling_list" model="ir.ui.view">
+        <field name="name">assets.handling.list</field>
+        <field name="model">assets.handling</field>
+        <field name="arch" type="xml">
+            <list string="Asset Handlings">
+                <field name="title"/>
+                <field name="asset_id"/>
+                <field name="category_id"/>
+                <field name="condition"/>
+                <field name="status"/>
+                <field name="assigned_by_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Asset Handling -->
+    <record id="action_assets_handling" model="ir.actions.act_window">
+        <field name="name">Asset Handling</field>
+        <field name="res_model">assets.handling</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

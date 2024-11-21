@@ -1,12 +1,18 @@
 <odoo>
+aA
     <record id="view_estate_property_offer" model="ir.ui.view">
         <field name="name">estate.property.offer.list</field>
         <field name="model">estate.property.offer</field>
         <field name="arch" type="xml">
-            <list string="Estate Property Offer">
+            <list string="Estate Property Offer" decoration-danger="status == 'refused'"
+                  decoration-success="status == 'accepted'" editable="bottom">
                 <field name="price"/>
-                <field name="status" />
-                <field name="partner_id" />
+                <field name="status"/>
+                <field name="deadline"/>
+                <button name="action_accept" type="object" icon="fa-check" string="Accept"/>
+                <button name="action_refuse" type="object" icon="fa-times" string="Refuse"/>
+
+                <field name="validity"/>
             </list>
         </field>
     </record>
@@ -16,24 +22,18 @@
         <field name="model">estate.property.offer</field>
         <field name="arch" type="xml">
             <form>
-
                 <sheet>
-                <notebook>
-                    <page string="Offer">
-                    <group>
-                        <field name="price"/>
-                        <field name="status"/>
-                        <field name="partner_id"/>
-                        <field name="property_id"/>
-                        <field name="offer_ids"/>
-                    </group>
-                    <footer>
-                    <button name="action_accept" type="object"  icon="fa-check" />
-                    <button name="action_refuse" type="object"  icon="fa-times"/>
-                    </footer>
-                    </page>
-                </notebook>
-               </sheet>
+                    <notebook>
+                        <page string="Offer">
+                            <group>
+                                <field name="price"/>
+                                <field name="status"/>
+                                <field name="partner_id"/>
+<!--                                <field name="property_id"/>-->
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
             </form>
         </field>
     </record>

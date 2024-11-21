@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ad_fileattachment,ad.fileattachment,model_ad_fileattachment,base.group_user,1,1,1,1
+access_assets_handling,assets.handling,model_assets_handling,base.group_user,1,1,1,1
+access_ad_attribute,ad.attribute,model_ad_attribute,base.group_user,1,1,1,1
+access_ad_category,ad.category,model_ad_category,base.group_user,1,1,1,1
+access_assets_handling_admin,assets.handling,model_assets_handling,base.group_system,1,1,1,1
+access_assets_handling_user,assets.handling,model_assets_handling,group_asset_user,0,0,0,0

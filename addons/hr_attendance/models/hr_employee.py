@@ -120,30 +120,61 @@ class HrEmployee(models.Model):
     def _compute_hours_today(self):
         now = fields.Datetime.now()
         now_utc = pytz.utc.localize(now)
-        for employee in self:
-            # start of day in the employee's timezone might be the previous day in utc
-            tz = pytz.timezone(employee.tz)
-            now_tz = now_utc.astimezone(tz)
-            start_tz = now_tz + relativedelta(hour=0, minute=0)  # day start in the employee's timezone
-            start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
 
+        for employee in self:
+            tz = pytz.timezone(employee.tz or 'UTC')
+            now_tz = now_utc.astimezone(tz)
+            start_tz = now_tz.replace(hour=0, minute=0, second=0, microsecond=0)
+            start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
+            print(f"Start of the day in UTC for employee {employee.name}: {start_naive}")
+            earliest_break = self.env['break.schedule'].search([
+                ('employee_id', '=', employee.id),
+                ('start_time', '>=', start_naive),
+                ('start_time', '<=', now)
+            ], order='start_time asc', limit=1)
+            today_start_naive = earliest_break.start_time or start_naive
+            print(f"Earliest break start time for today (or start of day if none): {today_start_naive}")
             attendances = self.env['hr.attendance'].search([
-                ('employee_id', 'in', employee.ids),
-                ('check_in', '<=', now),
-                '|', ('check_out', '>=', start_naive), ('check_out', '=', False),
+                ('employee_id', '=', employee.id),
+                ('check_in', '>=', start_naive),
+                ('check_in', '<=', now)
             ], order='check_in asc')
-            hours_previously_today = 0
+            print(f"Total attendances found for {employee.name}: {len(attendances)}")
+            break_times = self.env['break.schedule'].search([
+                ('employee_id', '=', employee.id),
+                ('start_time', '>=',today_start_naive),
+                # ('end_time', '<=', now)
+            ])
+            # for
+            print(f"Total breaks found for {employee.name}: {len(break_times)}")
+            # Sum up break hours for today
+            total_break_hours_today = sum(break_time.break_hours for break_time in break_times)
+            print(f"Total break hours today for {employee.name}: {total_break_hours_today}")
+
+            # Initialize variables for calculating worked hours
             worked_hours = 0
-            attendance_worked_hours = 0
+            last_attendance_worked_hours = 0
+
             for attendance in attendances:
-                delta = (attendance.check_out or now) - max(attendance.check_in, start_naive)
-                attendance_worked_hours = delta.total_seconds() / 3600.0
+                attendance_duration = (attendance.check_out or now) - max(attendance.check_in, start_naive)
+                attendance_worked_hours = attendance_duration.total_seconds() / 3600.0
+
                 worked_hours += attendance_worked_hours
-                hours_previously_today += attendance_worked_hours
-            employee.last_attendance_worked_hours = attendance_worked_hours
-            hours_previously_today -= attendance_worked_hours
-            employee.hours_previously_today = hours_previously_today
-            employee.hours_today = worked_hours
+                last_attendance_worked_hours = attendance_worked_hours
+                print(f"Attendance worked hours for session: {attendance_worked_hours}")
+            # Adjust for break hours
+            worked_hours -= total_break_hours_today
+            hours_previously_today = worked_hours - last_attendance_worked_hours
+            print(f"Worked hours after break deduction for {employee.name}: {worked_hours}")
+            print(f"Hours previously worked today for {employee.name}: {hours_previously_today}")
+
+            # Set the computed fields
+            employee.last_attendance_worked_hours = last_attendance_worked_hours
+            employee.hours_previously_today = max(0, hours_previously_today)
+            employee.hours_today = max(0, worked_hours)
+
+            total_break_hours_today = sum(break_time.break_hours for break_time in break_times)
+            print("TOTAL BREAK HOURS ========> ", total_break_hours_today)
 
     @api.depends('attendance_ids')
     def _compute_last_attendance_id(self):

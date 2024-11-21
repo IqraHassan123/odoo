@@ -1,0 +1,39 @@
+<odoo>
+    <!-- Form View for Asset Attribute -->
+    <record id="view_attribute_form" model="ir.ui.view">
+        <field name="name">ad.attribute.form</field>
+        <field name="model">ad.attribute</field>
+        <field name="arch" type="xml">
+            <form string="Asset Attribute">
+                <sheet>
+                    <group>
+
+                        <field name="title"/>
+                        <field name="value"/>
+                        <field name="asset_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_attribute_list" model="ir.ui.view">
+        <field name="name">ad.attribute.list</field>
+        <field name="model">ad.attribute</field>
+        <field name="arch" type="xml">
+            <list string="Asset Attributes">
+                <field name="title"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_asset_attribute" model="ir.actions.act_window">
+        <field name="name">Asset Attributes</field>
+        <field name="res_model">ad.attribute</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_attribute_list"/>
+    </record>
+
+</odoo>

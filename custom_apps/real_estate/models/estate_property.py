@@ -1,7 +1,7 @@
-from  datetime import timedelta
 from odoo import models, fields, api
 from odoo.exceptions import UserError,ValidationError
-
+from  datetime import date, timedelta
+default_availability_date = (date.today() + timedelta(days=90)).strftime("%Y-%m-%d")
 
 class EstateProperty(models.Model):
     _name = 'estate.property'
@@ -14,14 +14,14 @@ class EstateProperty(models.Model):
     ]
 
 
-    name = fields.Char(default="Unknown")
-    desc = fields.Text()
+    name = fields.Char(string="name" ,required=True)
+    description = fields.Text()
     postcode = fields.Char()
-    date_availability = fields.Date(copy=False, default=lambda self: fields.Date.today() + timedelta(days=90))
+    date_availability = fields.Date(copy=False, default=default_availability_date)
     expected_price = fields.Float()
     selling_price = fields.Float(copy=False)
     bedrooms = fields.Integer(default=2)
-    living_area = fields.Integer()
+    living_area = fields.Float(string='Living Area')
     active = fields.Boolean(string="Active", default=True)
     facades = fields.Integer()
     garage = fields.Boolean()
@@ -46,9 +46,13 @@ class EstateProperty(models.Model):
     offer_ids = fields.Many2many('estate.property.offer', string='Offers')
     total_area = fields.Float(string="Total Area (sqm)", compute="_compute_total_area", store=True)
     best_price = fields.Float(string="Best Price", compute="_compute_best_price", store=True)
-    validity = fields.Integer(default=7)
-    date_deadline = fields.Date()
-    create_date = fields.Datetime(string="Creation Date", readonly=True, index=True)
+    max_living_area= fields.Float(string='max_living_area', compute="_compute_max_living_area", store=True
+                                      )
+    @api.depends('living_area')
+    def _compute_max_living_area(self):
+        for record in self:
+            record.max_living_area = record.living_area
+
 
     def action_sold(self):
         for record in self:
@@ -70,24 +74,6 @@ class EstateProperty(models.Model):
     def action_offer_accepted(self):
         for record in self:
             record.state = 'offer_accepted'
-
-
-    @api.depends('create_date','validity')
-    def _compute_date_deadline(self):
-        for record in self:
-            if record.create_date:
-                record.date_deadline = record.create_date + timedelta(days=record.validity)
-            else:
-                record.date_deadline = False
-
-
-    def _inverse_date_deadline(self):
-        for record in self:
-            if record.date_deadline and record.create_date:
-                delta = (record.date_deadline - record.create_date).days
-                record.validity = max(delta, 0)
-            else:
-                record.validity = 7
 
 
     @api.depends('offer_ids.price')
@@ -113,7 +99,7 @@ class EstateProperty(models.Model):
 
 
     # @api.constrains('selling_price', 'expected_price', 'offer_ids', 'tags_id', 'property_type_id')
-    # def _check_price(self):
+    # def _check_price(self):_unknown
     #     for record in self:
     #         if record.selling_price <= 0:
     #             raise ValidationError("Selling Price must be a positive value")

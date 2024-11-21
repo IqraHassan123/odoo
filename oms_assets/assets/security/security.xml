@@ -1,0 +1,16 @@
+<odoo>
+    <record id="base.module_category_oms_assets" model="ir.module.category">
+        <field name="sequence">0</field>
+    </record>
+
+    <record id="group_asset_user" model="res.groups">
+        <field name="name">Asset Handling Manager Access</field>
+        <field name="category_id" ref="base.module_category_oms_assets"/>
+    </record>
+
+    <record id="group_asset_manager" model="res.groups">
+        <field name="name">Admin Asset</field>
+        <field name="comment">ashfoiahosifo</field>
+        <field name="category_id" ref="base.module_category_oms_assets"/>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+    <template id="fields_template_extended" inherit_id="auth_signup.fields" name="Auth Signup/Phone Number form fields">
+        <xpath expr="//div[hasclass('field-name')]" position="after">
+            <div class="mb-3 field-Phone">
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" id="phone" class="form-control form-control-sm" autofocus="autofocus"
+                       autocapitalize="off" required="required" t-att-readonly="'readonly' if only_passwords else None"/>
+            </div>
+            <div class="mb-3 field-Mobile">
+                <label for="mobile">Mobile</label>
+                <input type="text" name="mobile" id="mobile" class="form-control form-control-sm" autofocus="autofocus"
+                       autocapitalize="off" required="required" t-att-readonly="'readonly' if only_passwords else None"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -4,12 +4,11 @@
         <field name="name">estate.property.list</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <list string="Estate Property">
+            <list string="Estate Property" decoration-danger="state == 'offer_recieved'"
+                  decoration-success="state == 'offer_accepted'">
                 <field name="name"/>
                 <field name="selling_price"/>
                 <field name="state"/>
-
-
             </list>
         </field>
     </record>
@@ -27,6 +26,7 @@
                     <!-- Fields displayed at the upper corner -->
                     <group>
                         <field name="name"/>
+                        <field name="state"/>
                         <field name="postcode"/>
                         <field name="user_id"/>
                         <field name="buyer_id"/>
@@ -40,13 +40,15 @@
                     <notebook>
                         <page string="Description">
                             <group>
-                                <field name="desc" invisible="not is_partner"/>
+                                <field name="description" />
                                 <field name="living_area"/>
                                 <field name="facades"/>
                                 <field name="garage"/>
                                 <field name="garden"/>
-                                <field name="garden_area"/>
-                                <field name="garden_orientation"/>
+<!--                                <field name="garden_area"/>-->
+<!--                                <field name="garden_orientation"/>-->
+                               <field name="garden_area" invisible="not garden"/>
+                                <field name="garden_orientation" invisible="not garden"/>
                                 <field name="property_type_id"/>
                                 <field name="bedrooms"/>
                                 <field name="tags_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -77,23 +79,26 @@
         <field name="arch" type="xml">
             <search string="Real Estate">
                 <field name="name"/>
-                <field name="desc"/>
-                <field name="postcode"/>
-                <field name="user_id"/>
-                <field name="buyer_id"/>
-                <field name="living_area"/>
-                <field name="active"/>
-                <field name="facades"/>
-                <field name="property_type_id"/>
-                <field name="tags_id" widget="many2many_tags"/>
-                <field name="garage"/>
-                <field name="garden"/>
-                <field name="garden_area"/>
-                <field name="expected_price"/>
-                <field name="selling_price"/>
-                <field name="bedrooms"/>
-                <field name="state"/>
+<!--                <field name="desc"/>-->
+<!--                <field name="postcode"/>-->
+<!--                <field name="user_id"/>-->
+<!--                <field name="buyer_id"/>-->
+               <field name="living_area" string="Living Area" filter_domain="[('living_area', '>=', self)]" />
+<!--                 domain="[('living_area', '>=', max_living_area)]"-->
+<!--                <field name="active"/>-->
+<!--                <field name="facades"/>-->
+<!--                <field name="property_type_id"/>-->
+<!--                <field name="tags_id" widget="many2many_tags"/>-->
+<!--                <field name="garage"/>-->
+<!--                <field name="garden"/>-->
+<!--                <field name="garden_area"/>-->
+<!--                <field name="expected_price"/>-->
+<!--                <field name="selling_price"/>-->
+<!--                <field name="bedrooms"/>-->
+<!--                <field name="state"/>-->
                 <filter name="active" domain="[('active', '=', True)]"/>
+                <filter name="available" string="Available" domain="[('state', '=', 'draft')]" />
+
                 <group expand="0" string="Group By">
                     <filter string="name" name="name" context="{'group_by': 'name'}"/>
                 </group>
@@ -109,5 +114,6 @@
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'list', 'view_id': ref('view_estate_property_list')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_estate_property_form')})]"/>
+        <field name="context">{'search_default_available': 1}</field>
     </record>
 </odoo>

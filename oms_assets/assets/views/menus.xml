@@ -1,0 +1,11 @@
+<odoo>
+    <menuitem id="menu_asset_root" name="Asset Handling" sequence="10"/>
+    <menuitem id="menu_assets_handling" name="Assets" parent="menu_asset_root" action="action_assets_handling" sequence="20"/>
+
+    <menuitem id="menu_assets" name="Assets Files" parent="menu_asset_root" action="action_asset_file_attachment" sequence="30"/>
+
+    <menuitem id="menu_asset_attribute" name="Asset Attributes"
+              parent="menu_asset_root"
+              action="action_asset_attribute" sequence="40"/>
+
+</odoo>
