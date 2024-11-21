@@ -1,0 +1,30 @@
+<odoo>
+    <!-- Inherit the Configuration Settings Form -->
+    <record id="view_res_config_settings_inherit_asset" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.assets</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <!-- Create a new Group for Assets Settings -->
+                <group string="Assets">
+                    <group>
+                        <field name="asset_prefix"/>
+                    </group>
+                    <group>
+                        <field name="enable_asset_tracking"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action for Asset Settings -->
+    <record id="action_asset_settings" model="ir.actions.act_window">
+        <field name="name">Asset Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

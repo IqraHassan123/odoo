@@ -21,6 +21,7 @@
         "views/asset_handling_views.xml",
         "views/asset_file.xml",
         "views/menus.xml",
+        "views/settings.xml",
     ],
     'installable': True,
     'application': False,
