@@ -1,4 +1,4 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, exceptions
 
 class AssetsHandling(models.Model):
     _name = 'assets.handling'
@@ -6,7 +6,7 @@ class AssetsHandling(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string="Employee", required=False, ondelete='cascade', index=True)
     title = fields.Char(string="Title", required=True)
-    asset_id = fields.Char(string='Asset ID', required=True)
+    asset_id = fields.Char(string='Asset ID', readonly=True)  # Auto-generated
     serial_number = fields.Char(string='Serial Number')
     category_id = fields.Many2one('ad.category', string='Category', required=True)
     condition = fields.Selection([
@@ -29,3 +29,15 @@ class AssetsHandling(models.Model):
     supervisor_id = fields.Many2one('hr.employee', string='Supervisor')
     Assets = fields.Selection([('received', 'Received'), ('submitted', 'Submitted')])
     user_id = fields.Many2one('res.users', string='User')
+
+    @api.model
+    def create(self, vals):
+        asset_prefix = self.env['ir.config_parameter'].sudo().get_param('assets.asset_prefix', default='EQP-')
+        enable_asset_tracking = self.env['ir.config_parameter'].sudo().get_param('assets.enable_asset_tracking', default=False)
+
+        if not enable_asset_tracking:
+            raise exceptions.UserError("Asset Tracking is disabled. Enable it in Asset Settings to create assets.")
+
+        next_number = self.env['ir.sequence'].next_by_code('asset.code.sequence') or '0001'
+        vals['asset_id'] = f"{asset_prefix}{next_number}"
+        return super(AssetsHandling, self).create(vals)
