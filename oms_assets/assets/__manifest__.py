@@ -22,6 +22,7 @@
         "views/asset_file.xml",
         "views/settings.xml",
         "views/menus.xml",
+        "views/prefix_view.xml",
     ],
     'installable': True,
     'application': False,
